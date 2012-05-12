@@ -13,13 +13,17 @@ import tweepy
 import feedparser
 import models
 
+from secret_keys import consumer_token, consumer_secret, bitly_login, bitly_api_key
+'''
+# Example secret_keys.py file
 # Twitter OAuth
-consumer_token = "--"
-consumer_secret = "--"
+consumer_token = ''
+consumer_secret = ''
 
 # bit.ly URL shortener
-bitly_login = "--"
-bitly_api_key = "--"
+bitly_login = ''
+bitly_api_key = ''
+'''
 
 class BitLy():
     def __init__(self, login, apikey):
