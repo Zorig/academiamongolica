@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from google.appengine.api import urlfetch
@@ -8,7 +9,6 @@ from gaesessions import get_current_session
 
 import simplejson
 import urllib
-import datetime
 import tweepy
 import feedparser
 import models
@@ -46,8 +46,7 @@ def shorten_url(url):
 
 class TwitterAuthPage(webapp.RequestHandler):
     def get(self):
-        auth = tweepy.OAuthHandler(consumer_token, consumer_secret,
-            "http://academiamongolica.appspot.com/twitter_back")
+        auth = tweepy.OAuthHandler(consumer_token, consumer_secret, self.request.host_url + '/twitter_back')
         url = auth.get_authorization_url()
         models.OAuthToken(
             token_key = auth.request_token.key,
