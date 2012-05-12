@@ -42,7 +42,7 @@ def shorten_url(url):
 
 class TwitterAuthPage(webapp.RequestHandler):
     def get(self):
-        auth = tweepy.OAuthHandler(consumer_token, consumer_secret, 
+        auth = tweepy.OAuthHandler(consumer_token, consumer_secret,
             "http://academiamongolica.appspot.com/twitter_back")
         url = auth.get_authorization_url()
         models.OAuthToken(
@@ -95,9 +95,9 @@ class AllEntriesPage(webapp.RequestHandler):
         entries = models.Entry.gql("order by entry")
         template_values = {
             "entries": entries
-            }        
-        self.response.out.write(template.render("all_entries.html", template_values))
-        
+            }
+        self.response.out.write(template.render("views/all_entries.html", template_values))
+
 class NewEntryPage(webapp.RequestHandler):
     def post(self):
         session = get_current_session()
@@ -111,11 +111,11 @@ class NewEntryPage(webapp.RequestHandler):
             self.redirect("/" + str(entry.key().id()))
         else:
             self.redirect("/")
-        
+
 class NewTranslationPage(webapp.RequestHandler):
     def post(self):
         session = get_current_session()
-        entry = models.Entry.gql("where __key__=Key('Entry', :1)", 
+        entry = models.Entry.gql("where __key__=Key('Entry', :1)",
                     int(self.request.get("entry"))).get()
         if session.has_key("twitter_user") and session.has_key("twitter_token_key") and session.has_key("twitter_token_secret"):
             models.Translation(
@@ -142,16 +142,16 @@ class EntryPage(webapp.RequestHandler):
         word = self.request.get("lookup")
         entry = models.Entry.gql("where entry=:1", word.lower()).get()
         template_values = {}
-        
+
         new_entries = models.Entry.gql("order by when desc").fetch(10)
         template_values["new_entries"] = new_entries
-        
+
         if entry is None:
             if word == "":
                 self.redirect("/")
                 return
             entry =  models.Entry(
-                entry = urllib.unquote(word).lower(), 
+                entry = urllib.unquote(word).lower(),
                 description = "Ийм үг байхгүй байна",
                 user = "dagvadorj")
         else:
@@ -160,21 +160,21 @@ class EntryPage(webapp.RequestHandler):
         template_values["entry"] = entry
         if session.has_key("twitter_user"):
             template_values["user"] = session["twitter_user"]
-        
-        # blog posts        
+
+        # blog posts
         atomxml = feedparser.parse("http://academiamongolica.blogspot.com/feeds/posts/default")
         posts = atomxml['entries']
         template_values["blog_posts"] = posts
-        
-        self.response.out.write(template.render("index.html", template_values))
+
+        self.response.out.write(template.render("views/index.html", template_values))
     def get(self, entryid):
         session = get_current_session()
         entry = models.Entry.gql("where __key__=Key('Entry',:1)", int(entryid)).get()
         template_values = {}
-        
+
         new_entries = models.Entry.gql("order by when desc").fetch(10)
         template_values["new_entries"] = new_entries
-        
+
         if entry is None:
             self.redirect("/")
             return
@@ -184,13 +184,13 @@ class EntryPage(webapp.RequestHandler):
         template_values["entry"] = entry
         if session.has_key("twitter_user"):
             template_values["user"] = session["twitter_user"]
-        
-        # blog posts        
+
+        # blog posts
         atomxml = feedparser.parse("http://academiamongolica.blogspot.com/feeds/posts/default")
         posts = atomxml['entries']
         template_values["blog_posts"] = posts
-        
-        self.response.out.write(template.render("index.html", template_values))
+
+        self.response.out.write(template.render("views/index.html", template_values))
 
 class VotePage(webapp.RequestHandler):
     def post(self):
@@ -217,14 +217,14 @@ class VotePage(webapp.RequestHandler):
                     translation.vote += 2*val
                     translation.put()
             self.response.out.write(
-                "{\"translation\": " + trans + ", " + 
+                "{\"translation\": " + trans + ", " +
                 " \"vote\": \"" + str(translation.vote) + "\"}")
         else:
             self.response.out.write("NOTLOGGEDIN")
 
 class CommentPage(webapp.RequestHandler):
     def get(self, translation_key):
-        translation = models.Translation.gql("where __key__ = Key('Translation',:1)", 
+        translation = models.Translation.gql("where __key__ = Key('Translation',:1)",
             int(translation_key))[0]
         comments = models.Comment.gql("where translation=:1 order by when desc", translation)
         template_values = {
@@ -234,14 +234,14 @@ class CommentPage(webapp.RequestHandler):
         session = get_current_session()
         if session.has_key("twitter_user"):
             template_values["user"] = session["twitter_user"]
-        self.response.out.write(template.render("comments.html", template_values))
+        self.response.out.write(template.render("views/comments.html", template_values))
     def post(self, translation_key):
         session = get_current_session()
         if session.has_key("twitter_user"):
-            translation = models.Translation.gql("where __key__ = Key('Translation',:1)", 
+            translation = models.Translation.gql("where __key__ = Key('Translation',:1)",
                 int(translation_key))[0]
             comment = self.request.get("comment").replace("\n", " ")
-            new_comment = models.Comment(user=session["twitter_user"], 
+            new_comment = models.Comment(user=session["twitter_user"],
                 comment = comment, translation = translation)
             new_comment.put()
         self.redirect("/comments/" + translation_key)
