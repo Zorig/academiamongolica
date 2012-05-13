@@ -1,0 +1,3 @@
+[submodule "source/vendor/choppy"]
+	path = source/vendor/choppy
+	url = git://github.com/gmunkhbaatarmn/choppy.git
