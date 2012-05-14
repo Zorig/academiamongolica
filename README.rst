@@ -26,3 +26,11 @@ Google code дээрх хувилбараас мөчирлөн авсан агу
     BITLY_API_KEY = 'your-bit.ly-api-key'
 
 2. `./choppy-admin run` гэсэн коммандыг ажиллуулна.
+
+Төслийг deploy хийх
+-------------------
+
+1. `./choppy-admin deploy` гэсэн коммандыг ажиллуулна.
+
+2. `deployed` гэсэн хавтас шинээр үүснэ. Уг хавтсан доторх файлуудыг шууд deploy хийж болно.
+   (`appcfg.py update deployed` гэсэн үг)
