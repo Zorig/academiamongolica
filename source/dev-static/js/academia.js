@@ -63,3 +63,10 @@ var do_comment = function(el) {
 
   return false;
 };
+
+var do_comment_hide = function() {
+  $('.translation').css('background', '#fff');
+
+  $('#js-comments').hide();
+  $('#js-sidebar').fadeIn();
+};
