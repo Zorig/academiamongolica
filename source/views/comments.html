@@ -1,0 +1,28 @@
+<div class="pull-right">
+	<a href="javascript:;" onclick="do_comment_hide();">&laquo; Хаа</a>
+</div>
+
+<h3>{{ translation.translation }}</h3>
+
+<div>
+	{% if user %}
+	<form action="" method="post" onsubmit="return do_comment(this);">
+		<input type="hidden" name="translation_id" value="{{ translation.key().id() }}">
+		<textarea class="js-comment" name="comment" style="width:290px"></textarea>
+		<button class="btn" type="submit">Шинэ сэтгэгдэл нэм</button>
+	</form>
+	{% else %}
+	Та Twitter хэрэглэн <a href="/twitter_login">системд нэвтэрснээр</a>
+	шинэ сэтгэгдэл оруулж чадна.
+	{% endif %}
+</div>
+
+<h3>Сэтгэгдэлүүд</h3>
+
+{% for comment in comments %}
+<div>
+	<a target="_blank" href="http://twitter.com/{{ comment.user }}">@{{ comment.user }}</a>:
+	{{ comment.comment }}
+	<div class="date">{{ comment.when.strftime("%Y.%m.%d %H:%M") }}</span>
+</div>
+{% endfor %}

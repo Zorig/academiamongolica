@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>{{ title ~ ' - ' if title }}Academia Mongolica</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="{{ STATIC }}/css/bootstrap.css" rel="stylesheet">
+	<link href="{{ STATIC }}/css/main.css" rel="stylesheet">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Le fav and touch icons -->
+	<link rel="shortcut icon" href="/static/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC }}/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC }}/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="{{ STATIC }}/ico/apple-touch-icon-57-precomposed.png">
+
+	<script type="text/javascript" src="{{ STATIC }}/js/jquery.js"></script>
+	<script type="text/javascript" src="{{ STATIC }}/js/jquery.autocomplete-min.js"></script>
+	<script type="text/javascript" src="{{ STATIC }}/js/academia.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="container">
+			<br>
+			<p class="pull-right" style="line-height:36px;margin:0">
+				{% if user %}
+					Сайн уу,
+					<a target="_blank" href="http://twitter.com/{{ user }}">@{{ user }}</a>
+					&middot;
+					<a href="/twitter_logout">Гарах</a>
+				{% else %}
+					<a href="/twitter_login">Twitter хэрэглэн нэвтэр</a>
+				{% endif %}
+			</p>
+			<h2>
+				Academia Mongolica
+				<small>Олны хүчинд дулдуйдсан толь бичиг</small>
+			</h2>
+			<hr>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<div class="well">
+						<form id="search" method="post" action="" style="margin:0">
+							<div class="input-append">
+								<input type="text" id="lookup" style="width:840px" name="lookup" value="{{ entry.entry }}"><button class="btn" style="width:50px" type="button">Хай</button>
+							</div>
+							<div>
+								<a target="_blank" href="http://twitter.com/{{ entry.user }}">@{{ entry.user }}</a>: {{ entry.description }}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="span8">
+					<h3>{{ entry.entry }}</h3>
+					<div class="well">
+						{% if user %}
+						<form method="post" action="/new_translation" style="margin:0">
+							<input type="hidden" name="entry_id" value="{{ entry.key().id() }}">
+
+							<div class="input-append">
+								<input type="text" style="width:449px" name="translation" value=""><button type="submit" class="btn" style="width:122px" type="button">Шинэ санал нэм</button>
+							</div>
+							<label class="checkbox">
+								<input type="checkbox" name="tweet" value="yes">
+								Жиргэ
+							</label>
+						</form>
+						{% else %}
+						Та Twitter хэрэглэн
+						<a href="/twitter_login">системд нэвтэрснээр</a>
+						шинэ орчуулгын санал оруулж чадна.
+						{% endif %}
+					</div>
+
+					{% for translation in translations %}
+					<div class="translation" data-translation-id="{{ translation.key().id() }}">
+						<table width="100%">
+							<tr>
+								<td width="100">
+									<span id="js-vote-count-{{ translation.key().id() }}" style="font-size: 25px; ">{{ translation.vote }}</span>
+									<a href="javascript:;" title="Таалагдаж байна" onclick="vote({{ translation.key().id() }}, 1);">
+										<img align="middle" border="0" src="{{ STATIC }}/img/thumbs-up.gif" width="16" /></a>
+									<a href="javascript:;" title="Таалагдахгүй байна" onclick="vote( {{ translation.key().id() }}, -1);">
+										<img align="middle" border="0" src="{{ STATIC }}/img/thumbs-down.gif" width="16" /></a>
+								</td>
+								<td>
+									<div class="translation_text">
+										<div>{{ translation.translation }}</div>
+										<a target="_blank" href="http://twitter.com/{{ translation.user }}">@{{ translation.user }}</a>
+										<span style="color:#999;font-size:11px;">{{ translation.when.strftime("%Y.%m.%d %H:%M") }}</span>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					{% endfor %}
+				</div>
+
+				<div class="span4" id="js-sidebar">
+					<h3>Шинээр орсон үгүүд</h3>
+					<ul class="unstyled">
+						{% for entry in new_entries %}
+						<li><a href="/{{ entry.key().id() }}">{{ entry.entry }}</a> <span style="color:#999;font-style:italic">оруулсан @{{ entry.user }}</span></li>
+						{% endfor %}
+					</ul>
+
+					<h3>Үйл явдлууд</h3>
+					<ul class="unstyled">
+						{# {% for item in activity_list %} #}
+						{# <li><a href="/{{ entry.key().id() }}">{{ item.entry }}</a></li> #}
+						{# {% endfor %} #}
+					</ul>
+				</div>
+
+				<div class="span4" id="js-comments" style="display:none">
+					{# hidden block, used in ajax #}
+				</div>
+			</div>
+			<br>
+		</div>
+	</div>
+
+	<div class="container">
+		<br>
+		<p style="text-align:center">
+			&copy; 2011-2012 Academia Mongolica
+			&middot;
+			<a href="http://academiamongolica.blogspot.com">Блог</a>
+			&middot;
+			<a href="http://github.com/dolugen/academiamongolica">Хөгжүүлэлтэд оролцох</a>
+			&middot;
+			<a href="http://twitter.com/dagvadorj">Холбоо барих</a>
+			&middot;
+			<a href="http://github.com/dolugen/academiamongolica/issues">Алдаа мэдээлэх</a>
+		</p>
+		<br>
+	</div>
+</body>
+</html>
