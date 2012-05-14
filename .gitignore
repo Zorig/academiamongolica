@@ -1,1 +1,9 @@
-/secret_keys.py
+# ---------------------------
+# development mode only files
+# ---------------------------
+/data.store
+
+# -----------------------
+# choppy related settings
+# -----------------------
+/source/config/secret_keys.py

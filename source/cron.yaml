@@ -1,0 +1,15 @@
+# -------------------------------------------------------------
+# Scheduled Tasks With Cron for Python
+# http://code.google.com/appengine/docs/python/config/cron.html
+# =============================================================
+
+cron:
+# - description: every morning
+#   url: /cron/morning
+#   schedule: every day 08:00
+#   timezone: Asia/Ulaanbaatar
+
+# - description: every evening
+#   url: /cron/evening
+#   schedule: every day 20:00
+#   timezone: Asia/Ulaanbaatar
