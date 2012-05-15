@@ -4,7 +4,7 @@
 # ==================================================================
 # vim:ft=yaml fdm=marker
 
-application: academiamongolica
+application: academiamongolica-hrd
 version: 2
 runtime: python27
 api_version: 1
