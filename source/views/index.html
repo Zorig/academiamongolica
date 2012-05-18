@@ -99,6 +99,7 @@
 										<div>{{ translation.translation }}</div>
 										<a target="_blank" href="http://twitter.com/{{ translation.user }}">@{{ translation.user }}</a>
 										<span style="color:#999;font-size:11px;">{{ translation.when.strftime("%Y.%m.%d %H:%M") }}</span>
+                                        {% if translation.comment_set.count() %}<span style="color:#999;font-size:11px;float:right">{{ translation.comment_set.count() }} сэтгэгдэл</span>{% endif %}
 									</div>
 								</td>
 							</tr>
