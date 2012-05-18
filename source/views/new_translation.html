@@ -1,0 +1,43 @@
+<h3>{{ entry.entry }}</h3>
+<div class="well">
+	{% if user %}
+	<form method="post" action="/new_translation" style="margin:0">
+		<input type="hidden" name="entry_id" value="{{ entry.key().id() }}">
+
+		<div class="input-append">
+			<input type="text" style="width:449px" name="translation" value=""><button type="submit" class="btn" style="width:122px" type="button">Шинэ санал нэм</button>
+		</div>
+		<label class="checkbox">
+			<input type="checkbox" name="tweet" value="yes">
+			Жиргэ
+		</label>
+	</form>
+	{% else %}
+	Та Twitter хэрэглэн
+	<a href="/twitter_login">системд нэвтэрснээр</a>
+	шинэ орчуулгын санал оруулж чадна.
+	{% endif %}
+</div>
+
+{% for translation in translations %}
+<div class="translation" data-translation-id="{{ translation.key().id() }}">
+	<table width="100%">
+		<tr>
+			<td width="100">
+				<span id="js-vote-count-{{ translation.key().id() }}" style="font-size: 25px; ">{{ translation.vote }}</span>
+				<a href="javascript:;" title="Таалагдаж байна" onclick="vote({{ translation.key().id() }}, 1);">
+					<img align="middle" border="0" src="{{ STATIC }}/img/thumbs-up.gif" width="16" /></a>
+				<a href="javascript:;" title="Таалагдахгүй байна" onclick="vote( {{ translation.key().id() }}, -1);">
+					<img align="middle" border="0" src="{{ STATIC }}/img/thumbs-down.gif" width="16" /></a>
+			</td>
+			<td>
+				<div class="translation_text">
+					<div>{{ translation.translation }}</div>
+					<a target="_blank" href="http://twitter.com/{{ translation.user }}">@{{ translation.user }}</a>
+					<span style="color:#999;font-size:11px;">{{ translation.when.strftime("%Y.%m.%d %H:%M") }}</span>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+{% endfor %}

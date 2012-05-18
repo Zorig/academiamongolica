@@ -3,6 +3,7 @@
 
 import tweepy
 import random
+import urllib
 
 from google.appengine.ext.db import ReferencePropertyResolveError
 from choppy.handler import BaseRequestHandler as BaseHandler
@@ -53,7 +54,19 @@ class EntryPage(BaseHandler):
         entry = models.Entry.all().filter('entry =', query).get()
 
         if entry is None:
-            return self.redirect('/')
+            self.context['new_entry'] = query
+            self.context['entry'] = models.Entry(
+                entry=urllib.unquote(query).lower(),
+                description=u'Ийм үг байхгүй байна',
+                user='dagvadorj')
+
+            self.context['new_entries'] = models.Entry.all().order('-when').fetch(10)
+            self.context['activity_list'] = self.get_activity_list()
+
+            self.context['user'] = self.session.get('twitter_user', None)
+            self.context['title'] = u'Шинэ үг оруулах'
+
+            return self.render('index.html')
 
         return self.redirect('/%s' % entry.key().id())
 
@@ -220,3 +233,17 @@ class Comments(BaseHandler):
             translation=translation).put()
 
         return self.redirect('/ajax_comments?translation_id=%s' % translation_id)
+
+
+class NewEntry(BaseHandler):
+    def post(self):
+        if not 'twitter_user' in self.session:
+            return self.redirect('/')
+
+        entry = models.Entry(
+            entry=self.request.get('entry').lower(),
+            description=self.request.get('description').replace('\n', ' '),
+            user=self.session['twitter_user'])
+        entry.put()
+
+        return self.redirect('/%s' % entry.key().id())
