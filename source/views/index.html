@@ -116,10 +116,30 @@
 					</ul>
 
 					<h3>Үйл явдлууд</h3>
-					<ul class="unstyled">
-						{# {% for item in activity_list %} #}
-						{# <li><a href="/{{ entry.key().id() }}">{{ item.entry }}</a></li> #}
-						{# {% endfor %} #}
+					<ul class="unstyled activity">
+						{% for item in activity_list %}
+						<li>
+							<a href="/{{ item.entry_id }}">
+								<span class="label{{
+									{
+									'translation': ' label-info',
+									'vote+1': ' label-success',
+									'vote-1': ' label-important',
+									'comment': '',
+									}[item.action]
+									}}">{{
+									{
+									'translation': 'ОРЧУУЛГА',
+									'vote+1': 'САНАЛ+1',
+									'vote-1': 'САНАЛ-1',
+									'comment': 'СЭТГЭГДЭЛ',
+									}[item.action]
+									}}</span> {{ item.entry }} &rarr; {{ item.translation }}
+								<br>
+								<span class="date">{{ item.when.strftime("%m/%d %H:%M") }}-д @{{ item.user }}</span>
+							</a>
+						</li>
+						{% endfor %}
 					</ul>
 				</div>
 

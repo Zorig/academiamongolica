@@ -16,7 +16,7 @@ class Translation(db.Model):
     translation = db.StringProperty(required=True)
     vote = db.IntegerProperty(default=0)
     user = db.StringProperty(required=True)
-    when = db.DateTimeProperty(auto_now=True, auto_now_add=True)
+    when = db.DateTimeProperty(auto_now_add=True)
 
 
 class Vote(db.Model):

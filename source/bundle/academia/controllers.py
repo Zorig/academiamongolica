@@ -40,6 +40,8 @@ class EntryPage(BaseHandler):
 
         self.context['new_entries'] = models.Entry.all().order('-when').fetch(10)
         self.context['translations'] = models.Translation.all().filter('entry =', entry).order('-vote')
+        self.context['activity_list'] = self.get_activity_list()
+
         self.context['user'] = self.session.get('twitter_user', None)
         self.context['title'] = entry.entry
 
@@ -53,6 +55,45 @@ class EntryPage(BaseHandler):
             return self.redirect('/')
 
         return self.redirect('/%s' % entry.key().id())
+
+    def get_activity_list(self, count=10):
+        ret = []
+        data = []
+
+        for item in list(models.Translation.all().order('-when').fetch(count)):
+            data += [{
+                'action': 'translation',
+                'user': item.user,
+                'when': item.when,
+                'translation': item.translation,
+                'entry': item.entry.entry,
+                'entry_id': item.entry.key().id(),
+                }]
+
+        for item in list(models.Vote.all().order('-when').fetch(count)):
+            data += [{
+                'action': 'vote' + ('-1', '+1')[item.type == 1],
+                'user': item.user,
+                'when': item.when,
+                'translation': item.translation.translation,
+                'entry': item.translation.entry.entry,
+                'entry_id': item.translation.entry.key().id(),
+                }]
+
+        for item in list(models.Comment.all().order('-when').fetch(count)):
+            data += [{
+                'action': 'comment',
+                'user': item.user,
+                'when': item.when,
+                'translation': item.translation.translation,
+                'entry': item.translation.entry.entry,
+                'entry_id': item.translation.entry.key().id(),
+                }]
+
+        ret = sorted(data, key=lambda k: k['when'])
+        ret.reverse()
+
+        return ret[:3]
 
 
 class Lookup(BaseHandler):
