@@ -4,6 +4,7 @@
 import tweepy
 import random
 
+from google.appengine.ext.db import ReferencePropertyResolveError
 from choppy.handler import BaseRequestHandler as BaseHandler
 
 from config.secret_keys import TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET
@@ -61,34 +62,43 @@ class EntryPage(BaseHandler):
         data = []
 
         for item in list(models.Translation.all().order('-when').fetch(count)):
-            data += [{
-                'action': 'translation',
-                'user': item.user,
-                'when': item.when,
-                'translation': item.translation,
-                'entry': item.entry.entry,
-                'entry_id': item.entry.key().id(),
-                }]
+            try:
+                data += [{
+                    'action': 'translation',
+                    'user': item.user,
+                    'when': item.when,
+                    'translation': item.translation,
+                    'entry': item.entry.entry,
+                    'entry_id': item.entry.key().id(),
+                    }]
+            except ReferencePropertyResolveError:
+                pass
 
         for item in list(models.Vote.all().order('-when').fetch(count)):
-            data += [{
-                'action': 'vote' + ('-1', '+1')[item.type == 1],
-                'user': item.user,
-                'when': item.when,
-                'translation': item.translation.translation,
-                'entry': item.translation.entry.entry,
-                'entry_id': item.translation.entry.key().id(),
-                }]
+            try:
+                data += [{
+                    'action': 'vote' + ('-1', '+1')[item.type == 1],
+                    'user': item.user,
+                    'when': item.when,
+                    'translation': item.translation.translation,
+                    'entry': item.translation.entry.entry,
+                    'entry_id': item.translation.entry.key().id(),
+                    }]
+            except ReferencePropertyResolveError:
+                pass
 
         for item in list(models.Comment.all().order('-when').fetch(count)):
-            data += [{
-                'action': 'comment',
-                'user': item.user,
-                'when': item.when,
-                'translation': item.translation.translation,
-                'entry': item.translation.entry.entry,
-                'entry_id': item.translation.entry.key().id(),
-                }]
+            try:
+                data += [{
+                    'action': 'comment',
+                    'user': item.user,
+                    'when': item.when,
+                    'translation': item.translation.translation,
+                    'entry': item.translation.entry.entry,
+                    'entry_id': item.translation.entry.key().id(),
+                    }]
+            except ReferencePropertyResolveError:
+                pass
 
         ret = sorted(data, key=lambda k: k['when'])
         ret.reverse()
