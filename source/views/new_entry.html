@@ -1,0 +1,22 @@
+<h3>{{ entry.entry }}</h3>
+<div class="well">
+	{% if user %}
+	<form action="/new_entry" method="post">
+		<input name="entry" type="hidden" value="{{ entry.entry }}" />
+		<p>
+			Толь бичгэнд одоогоор ийм үг байхгүй байна. Та энэ үгэнд
+			тодорхой тайлбар хийн оруулны дараа орчуулгын санал
+			оруулах боломжтой. Энэ хэсгийг хоосон орхиж болно.
+		</p>
+		<p>
+			<div class="input-append">
+				<input type="text" class="span6" name="description" value=""><button class="btn" type="submit">Нэм</button>
+			</div>
+		</p>
+		</form>
+	{% else %}
+		Толь бичгэнд одоогоор ийм үг байхгүй байна. Та Twitter хэрэглэн
+		<a href="/twitter_login">системд нэвтэрснээр</a>
+		шинэ үг оруулж чадна.
+	{% endif %}
+</div>

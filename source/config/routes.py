@@ -8,6 +8,7 @@ ROUTES = [
     Route(r'/')                            <= 'academia.LastEntry',
     Route(r'/lookup')                      <= 'academia.Lookup',
     Route(r'/new_translation')             <= 'academia.Translation',
+    Route(r'/new_entry')                   <= 'academia.NewEntry',
     Route(r'/ajax_vote')                   <= 'academia.Vote',
     Route(r'/ajax_comments')               <= 'academia.Comments',
 
