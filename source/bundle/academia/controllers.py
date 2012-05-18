@@ -127,9 +127,19 @@ class Translation(BaseHandler):
         entry_id = self.request.get('entry_id')
         entry = models.Entry.get_by_id(int(entry_id))
 
+        translation_input = self.request.get('translation').replace('\n', ' ')
+
+        translation = models.Translation.all(keys_only=True)
+        translation.filter('entry =', entry)
+        translation.filter('translation =', translation_input)
+
+        if translation.fetch(1):
+            # TODO: show error message
+            return self.redirect('/%s' % entry.key().id())
+
         models.Translation(
             entry=entry,
-            translation=self.request.get('translation').replace('\n', ' '),
+            translation=translation_input,
             user=self.session['twitter_user']
             ).put()
 
