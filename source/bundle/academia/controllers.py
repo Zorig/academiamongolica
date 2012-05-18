@@ -93,7 +93,7 @@ class EntryPage(BaseHandler):
         ret = sorted(data, key=lambda k: k['when'])
         ret.reverse()
 
-        return ret[:3]
+        return ret[:count]
 
 
 class Lookup(BaseHandler):
